@@ -16,7 +16,8 @@ describe OCR do
     }
   ].each do |test|
     it "should produce an account number for #{test[:num]}" do
-      expect(subject.read_acct_number test[:input]).to eq(test[:num])
+      account = subject.read_acct_number test[:input]
+      expect(account.to_s).to eq(test[:num])
     end
   end
 end
