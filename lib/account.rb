@@ -12,11 +12,23 @@ class Account
     weighted.reduce(:+)
   end
 
-  def valid?
-    checksum % 11 == 0
+  def legible?
+    not @acct_number.include?('?')
   end
-  
+
+  def valid?
+    legible? && checksum % 11 == 0
+  end
+
   def to_s
-    "#{account_number}#{' ERR' unless valid?}"
+    "#{account_number}#{illegible_s || error_s}"
+  end
+
+  private
+  def illegible_s
+    ' ILL' unless legible?
+  end
+  def error_s
+    ' ERR' unless valid?
   end
 end
