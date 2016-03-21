@@ -1,6 +1,9 @@
+require 'account_formatter'
+
 class Account
   def initialize(acct_number)
     @acct_number = acct_number
+    @formatter = AccountFormatter.new
   end
 
   def account_number
@@ -23,14 +26,7 @@ class Account
   end
 
   def formatted_s
-    "#{account_number}#{illegible_s || error_s}"
+    @formatter.formatted_s(self)
   end
 
-  private
-  def illegible_s
-    ' ILL' unless legible?
-  end
-  def error_s
-    ' ERR' unless valid_checksum?
-  end
 end
