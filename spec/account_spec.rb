@@ -9,42 +9,40 @@ describe 'Account' do
     {
       account_number: [3,4,5,8,8,2,8,6,5],
       valid: true,
-      legible: true,
-      string: '345882865'
-    },
-    {
-      account_number: [4,5,7,5,0,8,0,0,0],
-      valid: true,
-      legible: true,
-      string: '457508000'
+      legible: true
     },
     {
       account_number: [6,6,4,3,7,1,4,9,5],
       valid: false,
-      legible: true,
-      string: '664371495 ERR'
+      legible: true
     },
     {
       account_number: ['?',2,3,4,5,6,7,8,9],
       valid: false,
-      legible: false,
-      string: '?23456789 ILL'
+      legible: false
     }
   ].each do |test|
-    it "should #{'not' unless test[:valid]} be valid_checksum: account #{test[:account_number].join}" do
+    #
+    # Valid is defined as being legible and also having a valid checksum
+    #
+    # account number:  3  4  5  8  8  2  8  6  5
+    # position names:  d9 d8 d7 d6 d5 d4 d3 d2 d1
+    #
+    # checksum calculation:
+    # checksum = (d1+2*d2+3*d3 +..+9*d9)
+    # valid = checksom % 11 ==0
+    it "account #{test[:account_number].join} should #{'not' unless test[:valid]} be a valid checksum" do
       subject = Account.new(test[:account_number])
       expect(subject.valid_checksum?).to eq(test[:valid])
     end
 
-    it "should #{'not' unless test[:legible]} be legible: account #{test[:account_number].join}" do
+    # Legible is defined by an account without any unknown characters
+    # Unknown characters are represented as ?
+    it "account #{test[:account_number].join} should #{'not' unless test[:legible]} be legible" do
       subject = Account.new(test[:account_number])
       expect(subject.legible?).to eq(test[:legible])
     end
 
-    it "should represent checksum and legibility in formatted_s: account #{test[:account_number].join}" do
-      subject = Account.new(test[:account_number])
-      expect(subject.formatted_s).to eq(test[:string])
-    end
   end
 end
 
