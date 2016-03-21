@@ -41,9 +41,9 @@ describe 'Account' do
       expect(subject.legible?).to eq(test[:legible])
     end
 
-    it "should represent checksum and legibility in to_s: account #{test[:account_number].join}" do
+    it "should represent checksum and legibility in formatted_s: account #{test[:account_number].join}" do
       subject = Account.new(test[:account_number])
-      expect(subject.to_s).to eq(test[:string])
+      expect(subject.formatted_s).to eq(test[:string])
     end
   end
 end

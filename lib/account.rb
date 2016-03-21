@@ -20,7 +20,7 @@ class Account
     legible? && checksum % 11 == 0
   end
 
-  def to_s
+  def formatted_s
     "#{account_number}#{illegible_s || error_s}"
   end
 
