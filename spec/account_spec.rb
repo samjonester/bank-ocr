@@ -31,9 +31,9 @@ describe 'Account' do
       string: '?23456789 ILL'
     }
   ].each do |test|
-    it "should #{'not' unless test[:valid]} be valid: account #{test[:account_number].join}" do
+    it "should #{'not' unless test[:valid]} be valid_checksum: account #{test[:account_number].join}" do
       subject = Account.new(test[:account_number])
-      expect(subject.valid?).to eq(test[:valid])
+      expect(subject.valid_checksum?).to eq(test[:valid])
     end
 
     it "should #{'not' unless test[:legible]} be legible: account #{test[:account_number].join}" do

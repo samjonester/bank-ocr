@@ -16,7 +16,7 @@ class Account
     not @acct_number.include?('?')
   end
 
-  def valid?
+  def valid_checksum?
     legible? && checksum % 11 == 0
   end
 
@@ -29,6 +29,6 @@ class Account
     ' ILL' unless legible?
   end
   def error_s
-    ' ERR' unless valid?
+    ' ERR' unless valid_checksum?
   end
 end
