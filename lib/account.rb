@@ -17,7 +17,9 @@ class Account
   end
 
   def valid_checksum?
-    legible? && checksum % 11 == 0
+    return false unless legible?
+
+    checksum % 11 == 0
   end
 
   def formatted_s
