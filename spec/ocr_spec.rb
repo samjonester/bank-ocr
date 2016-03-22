@@ -36,4 +36,18 @@ describe OCR do
     end
 
   end
+
+  describe "End-to-End Functionality" do
+    skip 'identifying corrections' do
+      let(:input) { [ " _  _  _  _  _  _  _  _  _ ",
+                      "|_||_||_||_||_||_||_||_||_|",
+                      "|_||_||_||_||_||_||_||_||_|" ] }
+      let(:corrections) {[ '888886888', '888888880', '888888988' ]}
+
+
+      it 'should produce a list of corrected account numbers' do
+        expect(subject.identify_corrections(input)).to eq(corrections)
+      end
+    end
+  end
 end

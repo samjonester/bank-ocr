@@ -28,14 +28,21 @@ describe OCR::NumberConverter do
   end
 
   describe 'identifying corrections' do
-    let(:input) { [ " _  _  _  _  _  _  _  _  _ ",
-                    "|_||_||_||_||_||_||_||_||_|",
-                    "|_||_||_||_||_||_||_||_||_|" ] }
+    let(:account) { double(OCR::Account) }
+    let(:account_number) { [ " _  _  _  _  _  _  _  _  _ ",
+                             "|_||_||_||_||_||_||_||_||_|",
+                             "|_||_||_||_||_||_||_||_||_|" ] }
     let(:corrections) {[ '888886888', '888888880', '888888988' ]}
 
+    before(:each) do
+      expect(account).to receive(:valid_checksum?).at_least(:once) do |account_number|
+        corrections.include?(account_number.join)
+      end
+    end
+    subject {OCR::NumberConverter.new(account: account) }
 
-    it 'should produce a list of corrected account numbers' do
-      expect(subject.identify_corrections(input).map(&:account_number)).to eq(corrections)
+    it 'should find valid corrections' do
+      expect(subject.identify_corrections(account_number).map{|c| c.join}).to eq(corrections)
     end
   end
 

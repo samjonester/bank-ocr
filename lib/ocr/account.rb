@@ -1,18 +1,18 @@
 class OCR
   class Account
-    def checksum(acct_number)
-      weighted = acct_number.reverse.each_with_index.map {|n, i| n*(i+1)}
+    def checksum(account_number)
+      weighted = account_number.reverse.each_with_index.map {|n, i| n*(i+1)}
       weighted.reduce(:+)
     end
 
-    def legible?(acct_number)
-      not acct_number.include?('?')
+    def legible?(account_number)
+      not account_number.include?('?')
     end
 
-    def valid_checksum?(acct_number)
-      return false unless legible?(acct_number)
+    def valid_checksum?(account_number)
+      return false unless legible?(account_number)
 
-      checksum(acct_number) % 11 == 0
+      checksum(account_number) % 11 == 0
     end
 
   end
