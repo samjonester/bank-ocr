@@ -36,16 +36,4 @@ describe OCR do
     end
 
   end
-
-  skip 'identifying corrections' do
-    let(:input) { " _  _  _  _  _  _  _  _  _ \n"\
-                  "|_||_||_||_||_||_||_||_||_|\n"\
-                  "|_||_||_||_||_||_||_||_||_|" }
-    let(:corrections) {[ '888886888', '888888880', '888888988' ]}
-
-
-    it 'should produce a list of corrected account numbers' do
-      expect(subject.account_corrections(input).map(&:account_number)).to eq(corrections)
-    end
-  end
 end

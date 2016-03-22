@@ -1,12 +1,6 @@
 require 'ocr/account'
 
-describe 'Account' do
-  it 'should have an account number' do
-    subject = OCR::Account.new([1,2,3])
-
-    expect(subject.account_number).to eq('123')
-  end
-
+describe OCR::Account do
   [
     {
       account_number: [3,4,5,8,8,2,8,6,5],
@@ -34,15 +28,13 @@ describe 'Account' do
     # checksum = (d1+2*d2+3*d3 +..+9*d9)
     # valid = checksom % 11 ==0
     it "account #{test[:account_number].join} should #{'not' unless test[:valid]} be a valid checksum" do
-      subject = OCR::Account.new(test[:account_number])
-      expect(subject.valid_checksum?).to eq(test[:valid])
+      expect(subject.valid_checksum?(test[:account_number])).to eq(test[:valid])
     end
 
     # Legible is defined by an account without any unknown characters
     # Unknown characters are represented as ?
     it "account #{test[:account_number].join} should #{'not' unless test[:legible]} be legible" do
-      subject = OCR::Account.new(test[:account_number])
-      expect(subject.legible?).to eq(test[:legible])
+      expect(subject.legible?(test[:account_number])).to eq(test[:legible])
     end
 
   end
