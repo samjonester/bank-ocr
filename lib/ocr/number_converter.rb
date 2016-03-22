@@ -58,7 +58,7 @@ class OCR
       [].tap do |acc|
         (0..input.length-1).each do |i|
           (0..input[i].length-1).each do |j|
-            acc.concat valid_substitutions(input, i, j) unless input[i] == "\n"
+            acc.concat valid_substitutions(input, i, j)
           end
         end
       end
