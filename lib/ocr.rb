@@ -1,56 +1,18 @@
 require 'pry'
-require 'ocr/account'
+require 'ocr/file_reader'
+require 'ocr/account_number_converter'
 
 class OCR
-  NUMBERS = [
-    [' _ ',
-     '| |',
-     '|_|'],
+  
+  def initialize(file_reader: OCR::FileReader.new, 
+                 account_number_converter: OCR::AccountNumberConverter.new)
+    @file_reader = file_reader
+    @account_number_converter = account_number_converter
+  end
 
-    ['   ',
-     '  |',
-     '  |'],
-
-    [' _ ',
-     ' _|',
-     '|_ '],
-
-    [' _ ',
-     ' _|',
-     ' _|'],
-
-    ['   ',
-     '|_|',
-     '  |'],
-
-    [' _ ',
-     '|_ ',
-     ' _|'],
-
-    [' _ ',
-     '|_ ',
-     '|_|'],
-
-    [' _ ',
-     '  |',
-     '  |'],
-
-    [' _ ',
-     '|_|',
-     '|_|'],
-
-    [' _ ',
-     '|_|',
-     ' _|'],
-  ]
-
-  def read_account_number(input)
-    acct_row = input.split(/\n/).take(3)
-    chunks_of_three = acct_row.map { |line| line.scan(/.{3}/) }
-    acct_nums = chunks_of_three[0].zip(chunks_of_three[1], chunks_of_three[2])
-    acct_number = acct_nums.map { |num| NUMBERS.find_index(num) || '?'}
-
-    OCR::Account.new acct_number
+  def read_account_numbers(file_path)
+    accounts = @file_reader.each_account_lines(file_path)
+    accounts.map { |account| @account_number_converter.convert_lines_to_numbers(account) }
   end
 
   def account_corrections(input)
@@ -73,5 +35,4 @@ class OCR
       read_account_number(test_input)
     end.select(&:valid_checksum?)
   end
-
 end

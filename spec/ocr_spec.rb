@@ -1,30 +1,38 @@
 require 'ocr'
+require 'ocr/file_reader'
 
 describe OCR do
   describe 'reading account number' do
     [
       {
-        input:  " _  _  _  _  _  _  _  _  _ \n"\
-                "| || || || || || || || || |\n"\
-                "|_||_||_||_||_||_||_||_||_|",
-        num:    '000000000'
+        input:  [[" _  _  _  _  _  _  _  _  _ ",
+                  "| || || || || || || || || |",
+                  "|_||_||_||_||_||_||_||_||_|"]],
+        nums:    [[0,0,0,0,0,0,0,0,0]]
       },
       {
-        input:  "    _  _     _  _  _  _  _ \n"\
-                "  | _| _||_||_ |_   ||_||_|\n"\
-                "  ||_  _|  | _||_|  ||_| _|",
-        num:    '123456789'
+        input:  [["    _  _     _  _  _  _  _ ",
+                  "  | _| _||_||_ |_   ||_||_|",
+                  "  ||_  _|  | _||_|  ||_| _|"]],
+        nums:    [[1,2,3,4,5,6,7,8,9]]
       },
       {
-        input:  "    _  _     _  _  _  _  _ \n"\
-                "___ _| _||_||_ |_   ||_||_|\n"\
-                "||||_  _|  | _||_|  ||_| _|",
-        num:    '?23456789'
+        input:  [["    _  _     _  _  _  _  _ ",
+                  "___ _| _||_||_ |_   ||_||_|",
+                  "||||_  _|  | _||_|  ||_| _|"]],
+        nums:    [['?',2,3,4,5,6,7,8,9]]
       }
     ].each do |test|
-      it "should produce an account number for #{test[:num]}" do
-        account = subject.read_account_number test[:input]
-        expect(account.account_number).to eq(test[:num])
+      let(:file_path) { '/foo/bar/fake/path' }
+      let(:file_reader) { double(OCR::FileReader) }
+      subject { OCR.new(file_reader: file_reader) }
+
+      it "should produce an account number for #{test[:nums]}" do
+        expect(file_reader).to receive(:each_account_lines).with(file_path).and_return(test[:input])
+
+        accounts = subject.read_account_numbers  file_path
+
+        expect(accounts).to eq(test[:nums])
       end
     end
   end
