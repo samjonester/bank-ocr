@@ -12,7 +12,12 @@ class OCR
 
   def read_account_numbers(file_path)
     accounts = @file_reader.each_account_lines(file_path)
-    accounts.map { |account| @number_converter.convert_lines_to_numbers(account) }
+    accounts.map do |account|
+      {
+        account_number: @number_converter.convert_lines_to_numbers(account),
+        corrections: @number_converter.identify_corrections(account)
+      }
+    end
   end
 
   def account_corrections(input)
