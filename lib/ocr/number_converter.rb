@@ -1,5 +1,5 @@
 class OCR
-  class AccountNumberConverter
+  class NumberConverter
     NUMBERS = [
       [' _ ',
        '| |',

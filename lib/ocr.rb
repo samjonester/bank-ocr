@@ -1,18 +1,18 @@
 require 'pry'
 require 'ocr/file_reader'
-require 'ocr/account_number_converter'
+require 'ocr/number_converter'
 
 class OCR
   
   def initialize(file_reader: OCR::FileReader.new, 
-                 account_number_converter: OCR::AccountNumberConverter.new)
+                 number_converter: OCR::NumberConverter.new)
     @file_reader = file_reader
-    @account_number_converter = account_number_converter
+    @number_converter = number_converter
   end
 
   def read_account_numbers(file_path)
     accounts = @file_reader.each_account_lines(file_path)
-    accounts.map { |account| @account_number_converter.convert_lines_to_numbers(account) }
+    accounts.map { |account| @number_converter.convert_lines_to_numbers(account) }
   end
 
   def account_corrections(input)
