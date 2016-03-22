@@ -1,4 +1,3 @@
-require 'pry'
 require 'ocr/account'
 
 class OCR

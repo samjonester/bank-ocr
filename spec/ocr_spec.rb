@@ -1,19 +1,22 @@
 require 'ocr'
 require 'ocr/file_reader'
+require 'ocr/account_formatter'
 
 describe OCR do
   let(:file_reader) { double(OCR::FileReader) }
   let(:number_converter) { double(OCR::NumberConverter) }
+  let(:account_formatter) { double(OCR::AccountFormatter) }
+
+    subject { OCR.new(file_reader: file_reader,
+                     number_converter: number_converter,
+                     account_formatter: account_formatter) }
+
 
   describe 'reading account numbers' do
     let(:file_path) { '/foo/bar/fake/path' }
     let(:lines) { [['abc','def', 'ghi'], ['jkl','mno', 'pqr']] }
     let(:numbers) { [[1, 2, 3], [4, 5, 6]] }
     let(:corrections) { [['foo'], ['bar', 'baz']] }
-
-    subject { OCR.new(file_reader: file_reader,
-                     number_converter: number_converter) }
-
     before(:each) do
       expect(file_reader).to receive(:each_account_lines).with(file_path).and_return(lines)
 
@@ -37,17 +40,22 @@ describe OCR do
 
   end
 
-  describe "End-to-End Functionality" do
-    skip 'identifying corrections' do
-      let(:input) { [ " _  _  _  _  _  _  _  _  _ ",
-                      "|_||_||_||_||_||_||_||_||_|",
-                      "|_||_||_||_||_||_||_||_||_|" ] }
-      let(:corrections) {[ '888886888', '888888880', '888888988' ]}
 
+  describe 'printing account numbers' do
+    let(:accounts) {[
+      { account_number: [1,2,3],
+        corrections: [ [4,5,6] ]
+      }
+    ]}
 
-      it 'should produce a list of corrected account numbers' do
-        expect(subject.identify_corrections(input)).to eq(corrections)
-      end
+    before(:each) do
+      expect(account_formatter).to receive(:formatted_s).with([1,2,3], [[4,5,6]]).and_return('hello world')
+    end
+
+    it 'should print formatted account info' do
+      expect(subject).to receive(:puts).with('hello world')
+      subject.print_accounts(accounts)
     end
   end
+
 end
