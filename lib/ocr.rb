@@ -1,5 +1,5 @@
 require 'pry'
-require 'account'
+require 'ocr/account'
 
 class OCR
   NUMBERS = [
@@ -50,7 +50,7 @@ class OCR
     acct_nums = chunks_of_three[0].zip(chunks_of_three[1], chunks_of_three[2])
     acct_number = acct_nums.map { |num| NUMBERS.find_index(num) || '?'}
 
-    Account.new acct_number
+    OCR::Account.new acct_number
   end
 
   def account_corrections(input)

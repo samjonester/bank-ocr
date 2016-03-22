@@ -1,9 +1,9 @@
-require 'account_formatter'
-require 'account'
+require 'ocr/account_formatter'
+require 'ocr/account'
 
-describe AccountFormatter do
+describe OCR::AccountFormatter do
   let(:account_number) {'123'}
-  let(:account) {double(Account, account_number: account_number)}
+  let(:account) {double(OCR::Account, account_number: account_number)}
 
   it "should print valid and legible account" do
     expect(account).to receive(:legible?).and_return(true)
