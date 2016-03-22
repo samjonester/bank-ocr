@@ -33,10 +33,11 @@ describe OCR::NumberConverter do
                              "|_||_||_||_||_||_||_||_||_|",
                              "|_||_||_||_||_||_||_||_||_|" ] }
     let(:corrections) {[ '888886888', '888888880', '888888988' ]}
+    let(:valid_checksums) {corrections + [888888888]}
 
     before(:each) do
       expect(account).to receive(:valid_checksum?).at_least(:once) do |account_number|
-        corrections.include?(account_number.join)
+        valid_checksums.include?(account_number.join)
       end
     end
     subject {OCR::NumberConverter.new(account: account) }

@@ -61,6 +61,9 @@ class OCR
             acc.concat valid_substitutions(input, i, j)
           end
         end
+      end.reject do |correction|
+        current_account = convert_lines_to_numbers(input)
+        correction == current_account
       end
     end
 
@@ -71,7 +74,7 @@ class OCR
         test_input[i][j] = sub_option
         convert_lines_to_numbers(test_input)
       end.select do |account_number| 
-        @account.valid_checksum?(account_number) 
+        @account.valid_checksum?(account_number)
       end
     end
 
