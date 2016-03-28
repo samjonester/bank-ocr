@@ -1,4 +1,5 @@
 require 'ocr/account'
+require 'ocr/character_substitutor'
 
 class OCR
   class NumberConverter
@@ -44,8 +45,11 @@ class OCR
        ' _|'],
     ]
 
-    def initialize(account: OCR::Account.new)
+    VALID_CHARACTERS = [' ', '|', '_']
+
+    def initialize(account: OCR::Account.new, character_substitutor: OCR::CharacterSubstitutor.new(VALID_CHARACTERS))
       @account = account
+      @character_substitutor = character_substitutor
     end
 
     def convert_lines_to_numbers(account_lines)
@@ -54,34 +58,21 @@ class OCR
       account_numbers.map { |num| NUMBERS.find_index(num) || '?'}
     end
 
-    def identify_corrections(input)
-      [].tap do |acc|
-        (0..input.length-1).each do |i|
-          (0..input[i].length-1).each do |j|
-            acc.concat valid_substitutions(input, i, j)
+    def identify_corrections(account_lines)
+      [].tap do |corrections|
+        account_lines.each_with_index do |line, i|
+          line.chars.each_with_index do |_, j|
+            corrections.concat valid_corrections_at_position(account_lines, i, j)
           end
         end
-      end.reject do |correction|
-        current_account = convert_lines_to_numbers(input)
-        correction == current_account
       end
     end
 
-    private 
-    def valid_substitutions(input, i, j)
-      substitution_chars(input[i][j]).map do |sub_option|
-        test_input = input.map { |a| a.dup }
-        test_input[i][j] = sub_option
-        convert_lines_to_numbers(test_input)
-      end.select do |account_number| 
-        @account.valid_checksum?(account_number)
-      end
+    private
+    def valid_corrections_at_position(account_lines, i, j)
+      possible_corrections = @character_substitutor.possible_substitutions_at_position(account_lines, i, j)
+      possible_account_numbers = possible_corrections.map { |correction| convert_lines_to_numbers(correction) }
+      possible_account_numbers.select { |account_number| @account.valid_checksum?(account_number) }
     end
-
-    SUBSTITUTIONS = [' ', '|', '_']
-    def substitution_chars(char)
-      SUBSTITUTIONS.reject{|s| s == char}
-    end
-
   end
 end
